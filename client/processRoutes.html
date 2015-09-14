@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta name="viewport" content="initial-scale=1.0, user-scalable=no">
+    <meta charset="utf-8">
+    <title>Get and Store Routes in Database</title>
+    <script src="/socket.io/socket.io.js"></script>
+    <script>
+    var socket = io.connect();
+    
+    socket.on('connect', function() {
+      document.getElementById('findRoutesButton').removeAttribute('disabled');
+    });
+    
+    function findRoutes() {
+      socket.emit('findRoutes');
+    }
+    </script>
+  </head>
+  <body>
+    <!--<button id="tripsNoRouteButton" onclick="getTrips()">Find how many trips without routes</button>-->
+    <button id="findRoutesButton" onclick="findRoutes()" disabled >Find those routes</button>
+    <div    id="status"/>
+  </body>
+</html>

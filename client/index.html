@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta name="viewport" content="initial-scale=1.0, user-scalable=no">
+    <meta charset="utf-8">
+    <title>CitiBike Animation</title>
+    <link rel="stylesheet" type="text/css" href="./css/style.css">
+    <script src="https://maps.googleapis.com/maps/api/js?v=3.exp&signed_in=true"></script>
+    <script src="./js/bikeMap.js"> </script>
+    <script src="/socket.io/socket.io.js"></script>
+    <script>
+    var socket = io.connect();
+    
+    socket.on('connect', function () {
+      document.getElementById('startAnimationButton').removeAttribute('disabled');
+    });
+    
+    window.socket.on('trips', function(params) {
+      receivedTrips(params);
+    });
+    
+    </script>
+  </head>
+  <body>
+    <div id="panel">
+      <div><b>Animate trips on 12/01/2014</b></div>
+      <div>Started after</div>
+      <input type="text" name="startTime" id="startTime" value="23:00"/>
+      <div>Started before</div>
+      <input type="text" name="endTime" id="endTime" value="23:59"/>
+      <br>
+      <button id="startAnimationButton" onclick="getTrips()" disabled >Start Animation</button>
+    </div>
+    <div id="map-canvas"></div>
+    &nbsp;
+    <div id="warnings_panel" style="width:100%;height:10%;text-align:center"></div>
+  </body>
+</html>

@@ -1,0 +1,93 @@
+0 info it worked if it ends with ok
+1 verbose cli [ '/home/ubuntu/.nvm/v0.10.35/bin/node',
+1 verbose cli   '/home/ubuntu/.nvm/v0.10.35/bin/npm',
+1 verbose cli   'install',
+1 verbose cli   'node-mongodb-native',
+1 verbose cli   '--save' ]
+2 info using npm@1.4.28
+3 info using node@v0.10.35
+4 warn package.json GoogleMapsBikeRoutes@1.0.0 No repository field.
+5 warn package.json http@0.0.0 http is also the name of a node core module.
+6 warn package.json http@0.0.0 No description
+7 warn package.json http@0.0.0 No repository field.
+8 warn package.json path@0.11.14 path is also the name of a node core module.
+9 verbose readDependencies using package.json deps
+10 verbose cache add [ 'node-mongodb-native', null ]
+11 verbose cache add name=undefined spec="node-mongodb-native" args=["node-mongodb-native",null]
+12 verbose parsed url { protocol: null,
+12 verbose parsed url   slashes: null,
+12 verbose parsed url   auth: null,
+12 verbose parsed url   host: null,
+12 verbose parsed url   port: null,
+12 verbose parsed url   hostname: null,
+12 verbose parsed url   hash: null,
+12 verbose parsed url   search: null,
+12 verbose parsed url   query: null,
+12 verbose parsed url   pathname: 'node-mongodb-native',
+12 verbose parsed url   path: 'node-mongodb-native',
+12 verbose parsed url   href: 'node-mongodb-native' }
+13 silly lockFile 19c00958-node-mongodb-native node-mongodb-native
+14 verbose lock node-mongodb-native /home/ubuntu/.npm/19c00958-node-mongodb-native.lock
+15 silly lockFile 19c00958-node-mongodb-native node-mongodb-native
+16 silly lockFile 19c00958-node-mongodb-native node-mongodb-native
+17 verbose addNamed [ 'node-mongodb-native', '' ]
+18 verbose addNamed [ null, '*' ]
+19 silly lockFile 5600b9da-node-mongodb-native node-mongodb-native@
+20 verbose lock node-mongodb-native@ /home/ubuntu/.npm/5600b9da-node-mongodb-native.lock
+21 silly addNameRange { name: 'node-mongodb-native', range: '*', hasData: false }
+22 verbose request where is /node-mongodb-native
+23 verbose request registry https://registry.npmjs.org/
+24 verbose request id 904073998f8a612b
+25 verbose url raw /node-mongodb-native
+26 verbose url resolving [ 'https://registry.npmjs.org/', './node-mongodb-native' ]
+27 verbose url resolved https://registry.npmjs.org/node-mongodb-native
+28 verbose request where is https://registry.npmjs.org/node-mongodb-native
+29 info trying registry request attempt 1 at 22:57:40
+30 http GET https://registry.npmjs.org/node-mongodb-native
+31 http 404 https://registry.npmjs.org/node-mongodb-native
+32 verbose headers { server: 'CouchDB/1.5.0 (Erlang OTP/R16B03)',
+32 verbose headers   'content-type': 'application/json',
+32 verbose headers   'cache-control': 'max-age=0',
+32 verbose headers   'content-length': '51',
+32 verbose headers   'accept-ranges': 'bytes',
+32 verbose headers   date: 'Sun, 26 Jul 2015 22:57:41 GMT',
+32 verbose headers   via: '1.1 varnish',
+32 verbose headers   age: '0',
+32 verbose headers   connection: 'keep-alive',
+32 verbose headers   'x-served-by': 'cache-dfw1830-DFW',
+32 verbose headers   'x-cache': 'MISS',
+32 verbose headers   'x-cache-hits': '0',
+32 verbose headers   'x-timer': 'S1437951460.959210,VS0,VE70' }
+33 silly registry.get cb [ 404,
+33 silly registry.get   { server: 'CouchDB/1.5.0 (Erlang OTP/R16B03)',
+33 silly registry.get     'content-type': 'application/json',
+33 silly registry.get     'cache-control': 'max-age=0',
+33 silly registry.get     'content-length': '51',
+33 silly registry.get     'accept-ranges': 'bytes',
+33 silly registry.get     date: 'Sun, 26 Jul 2015 22:57:41 GMT',
+33 silly registry.get     via: '1.1 varnish',
+33 silly registry.get     age: '0',
+33 silly registry.get     connection: 'keep-alive',
+33 silly registry.get     'x-served-by': 'cache-dfw1830-DFW',
+33 silly registry.get     'x-cache': 'MISS',
+33 silly registry.get     'x-cache-hits': '0',
+33 silly registry.get     'x-timer': 'S1437951460.959210,VS0,VE70' } ]
+34 silly lockFile 5600b9da-node-mongodb-native node-mongodb-native@
+35 silly lockFile 5600b9da-node-mongodb-native node-mongodb-native@
+36 error 404 404 Not Found: node-mongodb-native
+36 error 404
+36 error 404 'node-mongodb-native' is not in the npm registry.
+36 error 404 You should bug the author to publish it
+36 error 404 It was specified as a dependency of 'GoogleMapsBikeRoutes'
+36 error 404
+36 error 404 Maybe try 'npm search mongodb native'
+36 error 404
+36 error 404 Note that you can also install from a
+36 error 404 tarball, folder, or http url, or git url.
+37 error System Linux 3.14.13-c9
+38 error command "/home/ubuntu/.nvm/v0.10.35/bin/node" "/home/ubuntu/.nvm/v0.10.35/bin/npm" "install" "node-mongodb-native" "--save"
+39 error cwd /home/ubuntu/workspace
+40 error node -v v0.10.35
+41 error npm -v 1.4.28
+42 error code E404
+43 verbose exit [ 1, true ]

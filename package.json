@@ -1,0 +1,22 @@
+{
+  "name": "GoogleMapsBikeRoutes",
+  "version": "1.0.0",
+  "description": "Citibike Routes animated on google maps",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js"
+  },
+  "author": "Adam Pirani",
+  "license": "ISC",
+  "dependencies": {
+    "body-parser": "^1.13.2",
+    "express": "^4.13.1",
+    "http": "0.0.0",
+    "mongod": "^1.3.0",
+    "mongodb": "^2.0.39",
+    "mongojs": "^1.2.1",
+    "path": "^0.11.14",
+    "socket.io": "^1.3.6"
+  }
+}
