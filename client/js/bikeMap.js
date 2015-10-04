@@ -30,29 +30,29 @@ function startAnimation(trips) {
 
 window.initializeMapService = function() {
   // Instantiate a directions service.
-  // directionsService = new google.maps.DirectionsService();
+  // directionsService = new window.google.maps.DirectionsService();
 
   // Create a map and center it on the East River.
-  var eastRiver = new google.maps.LatLng(40.7234205, -73.9730403);
+  var eastRiver = new window.google.maps.LatLng(40.7234205, -73.9730403);
   
   var mapOptions = {
     zoom: 13,
     center: eastRiver,
   }
-  map = new google.maps.Map(document.getElementById('map-canvas'), mapOptions);
+  map = new window.google.maps.Map(document.getElementById('map-canvas'), mapOptions);
 }
 
 function animateTrip(trip, startTime) {   
   // Define the symbol, using one of the predefined paths ('CIRCLE')
   // supplied by the Google Maps JavaScript API.    
   var lineSymbol = {
-      path: google.maps.SymbolPath.CIRCLE,
+      path: window.google.maps.SymbolPath.CIRCLE,
       scale: 2,
       strokeColor: '#393'
   };
   
   // Create the polyline and add the symbol to it via the 'icons' property.
-  var bikePath = new google.maps.Polyline({
+  var bikePath = new window.google.maps.Polyline({
     path: trip.coordinates,
     geodesic: true,
     strokeColor: '#0000FF',
@@ -92,7 +92,7 @@ function scheduleRoute(bikePath, trip, startTime) {
   }, startTime * TIME_FACTOR);
 }
 
-google.maps.event.addDomListener(window, 'load', function() {
+window.google.maps.event.addDomListener(window, 'load', function() {
   window.initializeMapService();
 });
 
