@@ -4,61 +4,65 @@ var db = require("mongojs")(databaseUrl, collections);
 var http = require('http');
 
 exports.findRoutes = function(params) {
-    db.trips.find(
-      { starttime: {
-          $gte: new Date("12/1/2014"),
-          $lt:  new Date("12/2/2014"),
-        },
-        coordinates: {
-          $exists: false
-        }
-      }, 
-      function(err, trips) {
-        if(err) {
-          console.log("ERROR: ", err);
+    findUniqueTrips( function(trips) {
+        lookupRoutes(trips);
+    });
+}
+
+function findUniqueTrips(callback) {
+    //TODO: This aggregate statement seems odd, should be able to just output lat/long fields after finding 2 unique station id fields
+    db.trips.aggregate( [ 
+    	{ $group: 
+    		{ _id: { start: "$start_station_id" , end: "$end_station_id" },
+    		  start_station_id : { $first : "$start_station_id"},
+    		  end_station_id : { $first : "$end_station_id"},
+    		  start_station_latitude: { $first : "$start_station_latitude" },
+    		  start_station_longitude: { $first : "$start_station_longitude" },
+         	  end_station_latitude: { $first : "$end_station_latitude" },
+    	      end_station_longitude: { $first : "$end_station_longitude" },
+    		}
+    	}
+    ], function(err, trips) {
+        if (err) {
+            console.error("ERROR FINDING ROUTES: " , err);
         }
         else {
-          lookupRoutes(trips);
+            callback(trips);
         }
     });
 }
 
 function lookupRoutes(trips) {
-  console.log("found this many trips without coordinates: ", trips.length);
+  console.log("found this many unique trips: ", trips.length);
   var i = 0;
   var len = trips.length;
+  var numNewRoutes = 0;
   
-  //TODO: Promises or generators (tried, had issue with '*' symbol)
-  var intervalId = setInterval(function () {
-      console.log("Looking up trip %d of %d", i, len);
-      if (i === len) {
-          clearInterval(intervalId);
-          return;
-      }
-      var aTrip = trips[i++];
-      lookupRouteForTrip(aTrip);
-  }, 500)
+  for (var i = 0; i < len; ++i) {
+      var aTrip = trips[i];
+      (function(trip) {
+          db.routes.find( { '_id': trip['start_station_id'] + '_' + trip['end_station_id']}, function(err, routes) {
+            if (err) {
+                console.error("Error looking up trip in routes: ", err);
+            }
+            if (routes.length === 0) {
+                lookupRouteForTrip(trip, numNewRoutes);
+                ++numNewRoutes;
+            }
+          });
+      })(aTrip);
+  }
 }
 
-
-
-function lookupRouteForTrip(aTrip) {
-  console.log("searching routes for with id: " , aTrip['start_station_id'] + '_' + aTrip['end_station_id']);
-  db.routes.find( { '_id': aTrip['start_station_id'] + '_' + aTrip['end_station_id']}, function(err, routes) {
-    if (routes && routes.length > 0) {
-      console.log("found that route already");
-      return;
-    }
-    else {
-      var path = "http://maps.googleapis.com/maps/api/directions/json?origin=" + aTrip["start_station_latitude"] + "," + aTrip["start_station_longitude"] +
+function lookupRouteForTrip(aTrip, routeNum) {
+    var path = "http://maps.googleapis.com/maps/api/directions/json?origin=" + aTrip["start_station_latitude"] + "," + aTrip["start_station_longitude"] +
           "&destination=" + aTrip["end_station_latitude"] + "," + aTrip["end_station_longitude"] +
           "&mode=bicycling";
+    setTimeout(function() { lookupOnGoogle(path, aTrip) }, 500*routeNum);
+}
 
-      http.get(path, function(response) { handleGoogleResponse(response, aTrip); });
-    }
-  });
-  
-  
+function lookupOnGoogle(path, aTrip) {
+    http.get(path, function(response) { handleGoogleResponse(response, aTrip); });
 }
 
 function handleGoogleResponse(response, aTrip) {
@@ -85,7 +89,7 @@ function  processBikeTripResponse(body, aTrip) {
       setCoordinatesAndDistance(parsed, aTrip);
     }
     
-    ([{$group:{"start_station_id": "$start_station_id", "end_station_id": "$end_station id"}}])
+    ([{$group:{"start_station_id": "$start_station_id", "end_station_id": "$end_station_id"}}])
     
 }
 
