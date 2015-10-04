@@ -25,16 +25,24 @@ exports.findRoutes = function(params) {
 
 function lookupRoutes(trips) {
   console.log("found this many trips without coordinates: ", trips.length);
-  for (var i = 0, len = trips.length; i < len; ++i) {
-    var trip = trips[i];
-    (function(aTrip, j) {
-    //TODO: Use promises/generators instead of a 500ms timer
-    setTimeout(function() { lookupRouteForTrip(len, j, aTrip); }, j*500); 
-    })(trip, i);
-  }
+  var i = 0;
+  var len = trips.length;
+  
+  //TODO: Promises or generators (tried, had issue with '*' symbol)
+  var intervalId = setInterval(function () {
+      console.log("Looking up trip %d of %d", i, len);
+      if (i === len) {
+          clearInterval(intervalId);
+          return;
+      }
+      var aTrip = trips[i++];
+      lookupRouteForTrip(aTrip);
+  }, 500)
 }
 
-function lookupRouteForTrip(len, j, aTrip) {
+
+
+function lookupRouteForTrip(aTrip) {
   console.log("searching routes for with id: " , aTrip['start_station_id'] + '_' + aTrip['end_station_id']);
   db.routes.find( { '_id': aTrip['start_station_id'] + '_' + aTrip['end_station_id']}, function(err, routes) {
     if (routes && routes.length > 0) {
@@ -42,18 +50,18 @@ function lookupRouteForTrip(len, j, aTrip) {
       return;
     }
     else {
-      var path = "http://maps.googleapis.com/maps/api/directions/json?origin=" + aTrip["start station latitude"] + "," + aTrip["start station longitude"] +
-          "&destination=" + aTrip["end station latitude"] + "," + aTrip["end station longitude"] +
+      var path = "http://maps.googleapis.com/maps/api/directions/json?origin=" + aTrip["start_station_latitude"] + "," + aTrip["start_station_longitude"] +
+          "&destination=" + aTrip["end_station_latitude"] + "," + aTrip["end_station_longitude"] +
           "&mode=bicycling";
 
-      http.get(path, function(response) { handleGoogleResponse(response, len, j, aTrip); });
+      http.get(path, function(response) { handleGoogleResponse(response, aTrip); });
     }
   });
   
   
 }
 
-function handleGoogleResponse(response, len, j, aTrip) {
+function handleGoogleResponse(response, aTrip) {
     var body = '';
 
     response.on('data', function(d) {
@@ -64,12 +72,11 @@ function handleGoogleResponse(response, len, j, aTrip) {
       console.error("Error on google map request: ", e);
     });
     
-    response.on('end', function() { processBikeTripResponse(body, len, j, aTrip); });
+    response.on('end', function() { processBikeTripResponse(body, aTrip); });
 }
 
-function  processBikeTripResponse(body, len, j, aTrip) {
+function  processBikeTripResponse(body, aTrip) {
     var parsed = JSON.parse(body);
-    console.log("saving trip j: " + j + " of " + len);
     //TODO: Send message to client about progress every so often (10 trips?)
     if (parsed.error_message){
       console.error("Error in google response: ", parsed.error_message); 
@@ -78,7 +85,7 @@ function  processBikeTripResponse(body, len, j, aTrip) {
       setCoordinatesAndDistance(parsed, aTrip);
     }
     
-    ([{$group:{"start station id": "$start station id", "end station id": "$end station id"}}])
+    ([{$group:{"start_station_id": "$start_station_id", "end_station_id": "$end_station id"}}])
     
 }
 
@@ -101,11 +108,11 @@ function setCoordinatesAndDistance(directionResult, trip) {
   
   // console.log("saving this trip? ", trip);
   db.trips.save(trip);
-  db.routes.save( { '_id'                : trip['start station id'] + '_' + trip['end station id'],
+  db.routes.save( { '_id'                : trip['start_station_id'] + '_' + trip['end_station_id'],
                     'start station name' : trip['start station name'],
-                    'start station id'   : trip['start station id'],
+                    'start station id'   : trip['start_station_id'],
                     'end station name'   : trip['end station name'],
-                    'end station id'     : trip['end station id'],
+                    'end station id'     : trip['end_station_id'],
                     'coordinates'        : trip.coordinates,
                     'distance'           : trip.distance,
                     'duration'           : myRoute.duration.value });
