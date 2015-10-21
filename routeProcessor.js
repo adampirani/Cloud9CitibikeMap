@@ -3,6 +3,8 @@ var databaseUrl = "mongodb://localhost/citibike"; // "username:password@example.
 var collections = ["trips", "routes"]
 var db = require("mongojs")(databaseUrl, collections);
 var http = require('http');
+var GOOGLE_REQUEST_TIMER = 500;
+var GOOGLE_REQUEST_URL = "http://maps.googleapis.com/maps/api/directions/json?origin=";
 
 //Run automatically on the server, wrap in exports if using UI
 // exports.findRoutes = function(params) {
@@ -68,10 +70,10 @@ function lookupRoutes(trips) {
 }
 
 function lookupRouteForTrip(aTrip, routeNum) {
-    var path = "http://maps.googleapis.com/maps/api/directions/json?origin=" + aTrip["start_station_latitude"] + "," + aTrip["start_station_longitude"] +
+    var path = GOOGLE_REQUEST_URL + aTrip["start_station_latitude"] + "," + aTrip["start_station_longitude"] +
           "&destination=" + aTrip["end_station_latitude"] + "," + aTrip["end_station_longitude"] +
           "&mode=bicycling";
-    setTimeout(function() { lookupOnGoogle(path, aTrip) }, 500*routeNum);
+    setTimeout(function() { lookupOnGoogle(path, aTrip) }, GOOGLE_REQUEST_TIMER*routeNum);
 }
 
 function lookupOnGoogle(path, aTrip) {
