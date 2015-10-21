@@ -18,11 +18,7 @@ router.use(bodyParser.urlencoded({
 
 io.on('connection', function(socket) { 
   socket.on('getTrips', function(params) {
-    tripSearcher.getTrips(params, io);
-  });
-  
-  socket.on('denormalize', function(params) {
-    console.error("Denormalize not yet implemented");  
+    tripSearcher.getTrips(params, socket);
   });
 });
 

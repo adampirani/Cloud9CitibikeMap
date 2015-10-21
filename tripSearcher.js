@@ -2,7 +2,7 @@ var databaseUrl = "mongodb://localhost/citibike"; // "username:password@example.
 var collections = ["trips", "routes", "tripRoutes"]
 var db = require("mongojs")(databaseUrl, collections);
 
-exports.getTrips = function(params, io) {
+exports.getTrips = function(params, socket) {
     console.log("get trips with params: ", params);
     
     db.tripRoutes.find(
@@ -17,7 +17,7 @@ exports.getTrips = function(params, io) {
         }
         else {
           console.log("found this many trips: ", trips.length);
-          io.emit("trips", trips);
+          socket.emit("trips", trips);
         }
       }
     );
