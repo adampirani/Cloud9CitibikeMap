@@ -1,6 +1,5 @@
-(function() {
 var databaseUrl = "mongodb://localhost/citibike"; // "username:password@example.com/mydb"
-var collections = ["trips", "routes"]
+var collections = ["trips", "routes", "tripRoutes"]
 var db = require("mongojs")(databaseUrl, collections);
 var http = require('http');
 var GOOGLE_REQUEST_TIMER = 500;
@@ -135,5 +134,3 @@ function setCoordinatesAndDistance(directionResult, trip) {
                     'distance'           : myRoute.distance.value,
                     'duration'           : myRoute.duration.value });
 }
-
-})();

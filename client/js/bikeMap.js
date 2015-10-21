@@ -53,7 +53,7 @@ function animateTrip(trip, startTime) {
   
   // Create the polyline and add the symbol to it via the 'icons' property.
   var bikePath = new window.google.maps.Polyline({
-    path: trip.coordinates,
+    path: trip.routeCoordinates,
     geodesic: true,
     strokeColor: '#0000FF',
     strokeOpacity: 1.0,
