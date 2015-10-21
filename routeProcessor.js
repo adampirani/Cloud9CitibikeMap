@@ -54,19 +54,22 @@ function lookupRoutes(trips) {
   var numNewRoutes = 0;
   
   for (var i = 0; i < len; ++i) {
-      var aTrip = trips[i];
-      (function(trip) {
-          db.routes.find( { '_id': trip['start_station_id'] + '_' + trip['end_station_id']}, function(err, routes) {
-            if (err) {
-                console.error("Error looking up trip in routes: ", err);
-            }
-            if (routes.length === 0) {
-                lookupRouteForTrip(trip, numNewRoutes);
-                ++numNewRoutes;
-            }
-          });
-      })(aTrip);
+    var aTrip = trips[i];
+    newRouteExecute(aTrip, function(trip) {
+      lookupRouteForTrip(trip, numNewRoutes++);
+    });
   }
+}
+
+function newRouteExecute(trip, callback) {
+  db.routes.find( { '_id': trip['start_station_id'] + '_' + trip['end_station_id']}, function(err, routes) {
+    if (err) {
+        console.error("Error looking up trip in routes: ", err);
+    }
+    if (routes.length === 0) {
+        callback(trip);
+    }
+  });
 }
 
 function lookupRouteForTrip(aTrip, routeNum) {
