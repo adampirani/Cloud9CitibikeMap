@@ -4,8 +4,10 @@ var collections = ["trips", "routes"]
 var db = require("mongojs")(databaseUrl, collections);
 var http = require('http');
 
-
-findUniqueTrips(lookupRoutes);
+//Run automatically on the server, wrap in exports if using UI
+// exports.findRoutes = function(params) {
+  findUniqueTrips(lookupRoutes);
+// }
 
 function findUniqueTrips(callback) {
     //TODO: This aggregate statement seems odd, should be able to just output lat/long fields after finding 2 unique station id fields
