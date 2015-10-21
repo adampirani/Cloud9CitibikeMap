@@ -2,6 +2,10 @@
   "use strict";
 var map;
 var TIME_FACTOR = 3; //For every second in real life, move at 3ms
+var HEX_MAX = 255;
+var HEX_BASE = 16;
+var MAX_SPEED_FACTOR = 0.6;
+var MIN_SPEED_FACTOR = 1.5;
 
 function buildDateStringISO(time) {
   return "2014-12-01T" + time + ":00.000Z";
@@ -55,7 +59,7 @@ function animateTrip(trip, startTime) {
   var bikePath = new window.google.maps.Polyline({
     path: trip.routeCoordinates,
     geodesic: true,
-    strokeColor: '#0000FF',
+    strokeColor: getTripColor(trip),
     strokeOpacity: 1.0,
     strokeWeight: 1,
     icons: [{
@@ -65,6 +69,48 @@ function animateTrip(trip, startTime) {
   });
 
   scheduleRoute(bikePath, trip, startTime);
+}
+
+function getTripColor(trip) {
+  if (trip.routeDuration === 0) {
+    return "blue";
+  }
+  var relativeDuration = trip.tripduration / trip.routeDuration;
+  var redFactor = 0;
+  var greenFactor = 0;
+  var blueFactor = 0;
+
+  if (relativeDuration < 1) { //faster than google directions
+    //closer to MAX_SPEED_FACTOR -> more red
+    //closer to 1 -> more green
+    var fastBaseline = Math.max(relativeDuration - MAX_SPEED_FACTOR, 0) / MAX_SPEED_FACTOR;
+    greenFactor = fastBaseline;
+    redFactor = 1 - fastBaseline;
+  }
+  else { //slower than google directions
+    //closer to MIN_SPEED_FACTOR -> more blue
+    //closer to 1 -> more green
+    var slowBaseline = (Math.min(relativeDuration, MIN_SPEED_FACTOR) - 1) / (MIN_SPEED_FACTOR - 1) ;
+    blueFactor = slowBaseline;
+    greenFactor = 1 - slowBaseline;
+  }
+  
+  var red   = percentageToHexString(redFactor, 2);
+  var green = percentageToHexString(greenFactor, 2);
+  var blue  = percentageToHexString(blueFactor, 2);
+  
+  return '#' + red + green + blue;
+}
+
+function percentageToHexString(pct, padding) {
+  var hex = Number(Math.round(pct*HEX_MAX)).toString(HEX_BASE);
+  padding = padding === undefined ? 2 : padding;
+
+  while (hex.length < padding) {
+      hex = "0" + hex;
+  }
+
+  return hex;
 }
 
 //Schedule the animation to take place based on when it starts
